@@ -1,0 +1,62 @@
+@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<Practical14.Models.Employee>
+
+@{
+    ViewBag.Title = "Employee List";
+}
+
+<h2>Employee List</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+</p>
+
+<!-- Search Form -->
+<form method="get" action="@Url.Action("Index", "Employees")">
+    <input type="text" name="search" value="@Request.QueryString["search"]" placeholder="Search by Name..." />
+    <button type="submit">Search</button>
+</form>
+
+<!-- Employee Table -->
+<table class="table">
+    <thead>
+        <tr>
+            @if (Model.Any())
+            {
+                <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+                <th>@Html.DisplayNameFor(model => model.First().DOB)</th>
+                <th>@Html.DisplayNameFor(model => model.First().Age)</th>
+                <th>Actions</th>
+            }
+            else
+            {
+                <th colspan="4">No Employees Found</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.DOB)</td>
+                <td>@Html.DisplayFor(modelItem => item.Age)</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Pagination -->
+@if (Model.Any())
+{
+    <div>
+        @Html.PagedListPager(Model, page => Url.Action("Index", "Employees",new { page, search = Request.QueryString["search"] }))
+    </div>
+}
